@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>TodoList</title>
+</head>
+<body ng-app="TodoList">
+	
+	<div class="todolist" ng-controller="TodoController">
+		<form ng-submit="addTodo()">
+			<input type="text" ng-model="todo">
+		</form>
+		<dl>
+			<dt>待办事项{{todos.length}}</dt>
+			<dd ng-repeat="todo in todos">
+				<input type="checkbox" ng-click="done($index);" ng-checked="todo.checked">
+				<!-- $index是数组的索引值 -->
+				<span>{{todo.text}}</span>
+				<a href="javascript:;" ng-click="delete($index, todos)">删除</a>
+			</dd>
+			<dt>已办事件</dt>
+			<dd ng-repeat="doneTodo in doneTodos">
+				<input type="checkbox" ng-click="undone($index)" ng-checked="doneTodo.checked">
+				<span>{{doneTodo.text}}</span>
+				<a href="javascript:;" ng-click="delete($index, doneTodos)">删除</a>
+			</dd>
+		</dl>
+	</div>
+	<script src="./libs/angular.min.js"></script>
+	<script>
+		
+		var TodoList = angular.module('TodoList', []);
+
+		TodoList.controller('TodoController', ['$scope', function ($scope) {
+			
+			// 待办事项
+			$scope.todos = [];
+
+			// 已办事项
+			$scope.doneTodos = [];
+
+			// 数据格式
+			// [
+			// 	{checked: true, text: '洗脸'},
+			// 	{checked: false, text: '吃饭'}
+			// ]
+
+			$scope.addTodo = function () {
+				// alert($scope.todo);
+				// 向待办事项里添一条数据
+				$scope.todos.push({checked: false, text: $scope.todo});
+
+				// 清空表单
+				$scope.todo = '';
+			}
+
+			$scope.done = function (index) {
+				
+				var doneTodo = $scope.todos.splice(index, 1)[0];
+
+				// var doneTodo = $scope.todos[index];
+				// alert(index);
+
+				doneTodo.checked = true;
+
+				$scope.doneTodos.push(doneTodo);
+			}
+
+			$scope.undone = function (index) {
+				var undoneTodos = $scope.doneTodos.splice(index, 1)[0];
+
+				undoneTodos.checked = false;
+
+				$scope.todos.push(undoneTodos);
+			}
+
+			$scope.delete = function (index, todos) {
+				// console.log(todos);
+
+				todos.splice(index, 1);
+			}
+
+			
+		}]);
+
+
+		var arr = ['a', 'b', 'c', 'd'];
+
+		console.log(arr.splice(1, 1));
+		console.log(arr);
+
+	</script>
+</body>
+</html>
