@@ -1,0 +1,152 @@
+<!doctype html>
+<html ng-app="app" ng-controller="controller">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>
+        已买到商品：订单查询基础功能
+    </title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <style>
+        #content1{padding:16px;}
+        table
+        {
+            border-collapse:collapse;
+        }
+
+        table,th, td
+        {
+            border: 1px solid black;
+            vertical-align:top;
+            padding:12px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+<p ng-show="IsLoading">订单加载中...</p>
+
+<div ng-show="!IsLoading">
+    <table>
+        <thead>
+        <tr>
+            <th>订单编号</th>
+            <th>卖家</th>
+            <th>商品详情</th>
+            <th>订单总价</th>
+            <th>物流状态</th>
+            <th>订单状态</th>
+            <th>下单日期</th>
+        </tr>
+        </thead>
+        <tbody >
+        <tr ng-repeat="x in orderList">
+            <td>{{x.orderId}}</td>
+            <td>{{x.sealer}}</td>
+            <td>
+                <ul ng-repeat="p in x.products" style="border-bottom:1px solid #333;">
+                    <li>{{p.name}}</li>
+                    <li>{{p.desciption}}</li>
+                    <li>{{p.price}}</li>
+                    <li>{{p.oldPrice}}</li>
+                    <li>{{p.amount}}</li>
+                    <li>{{p.payment}}</li>
+                </ul>
+            </td>
+            <td>{{x.orderPayment}}</td>
+            <td>{{x.traffic}}</td>
+            <td>{{x.status}}</td>
+            <td>{{x.createTime}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script src="js/angular.min.js"></script>
+<script>
+
+
+    var app = angular.module("app",[]);
+    app.controller("controller",function($scope){
+
+        $scope.orderListBase =[
+            {
+                orderId : 'GH2016032010001',
+                createTime: '2016-03-20 10:01',
+                sealer: '专营店1卖家',
+                traffic: '快递已取件',
+                status: '卖家已发货',
+                products:[
+                    {name:'黑色夹克衫',
+                        desciption:'质量扎实，外观很潮',
+                        price:200.00,
+                        oldPrice:350.00,
+                        amount:1,
+                        payment:200.00
+                    }
+                ],
+                orderPayment:200.00
+            },
+            {
+                orderId : 'GH2016032010002',
+                createTime: '2016-03-20 12:01',
+                sealer: '小诗家',
+                traffic: '快递已派送',
+                status: '卖家已发货',
+                products:[
+                    {name:'针织衫',
+                        desciption:'颜色新颖',
+                        price:120.00,
+                        oldPrice:260.00,
+                        amount:1,
+                        payment:120.00
+                    },
+                    {name:'棒球帽',
+                        desciption:'宽檐',
+                        price:60.00,
+                        oldPrice:160.00,
+                        amount:1,
+                        payment:60.00
+                    }
+                ],
+                orderPayment:180.00
+            },
+            {
+                orderId : 'GH2016032010003',
+                createTime: '2016-03-19 16:01',
+                sealer: '胜利家装店',
+                traffic: '已派送成功，用户已签收',
+                status: '买家已确认收货',
+                products:[
+                    {name:'吸盘把手',
+                        desciption:'白色、耐久使用',
+                        price:38.00,
+                        oldPrice:80.00,
+                        amount:2,
+                        payment:76.00
+                    }
+                ],
+                orderPayment:76.00
+            }
+        ];
+
+        $scope.orderList = [];
+
+        $scope.IsLoading = false;
+        $scope.LoadOrderList = function(accountId,pageSize,pageIndex){
+            $scope.IsLoading=true;
+            $scope.orderList = $scope.orderListBase;
+            $scope.IsLoading=false;
+        }
+
+        $scope.LoadOrderList();
+    });
+
+</script>
+
+</body>
+</html>

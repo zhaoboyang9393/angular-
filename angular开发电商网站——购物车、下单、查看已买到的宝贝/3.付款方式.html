@@ -1,0 +1,332 @@
+<!doctype html>
+<html ng-app="app" ng-controller="controller">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>
+        购物车：添加支付方式，完成
+    </title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <style>
+        #content1{padding:16px;}
+        table
+        {
+            border-collapse:collapse;
+        }
+
+        table,th, td
+        {
+            border: 1px solid black;
+            vertical-align:top;
+            padding:12px;
+        }
+        .buyAmount{width:30px;}
+        .logo{width:100px;height:100px;}
+        .accountInfo{margin-top:20px;}
+        .accountInfo label { width:90px; display:inline-block; text-align:right;}
+        .accountInfo p {margin:0;padding:0;}
+        .accountInfo ul li span{color:red;}
+        .payment{padding-top:28px;}
+        .payment b{padding:10px; cursor:pointer;}
+        .selected{ color:blue; }
+    </style>
+</head>
+
+<body>
+
+<div>
+
+    <div ng-show="Step1IsOk!=true">
+        <table>
+            <thead>
+            <tr>
+                <th>选中</th>
+                <th>ID</th>
+                <th>名称</th>
+                <th>编号</th>
+                <th>商品图片</th>
+                <th>购买数量</th>
+                <th>价格</th>
+                <th>应付</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="p in productList">
+                <td><input type="checkbox" ng-model="p.selected" /></td>
+                <td>{{p.productId}}</td>
+                <td>{{p.productName}}</td>
+                <td>{{p.productCode}}</td>
+                <td><img src="{{p.logo}}"  class="logo" ></td>
+                <td><input type="text" ng-model="p.buyAmount" /></td>
+                <td><b>{{p.retailPrice}}</b> <span>{{p.oldPrice}}</span></td>
+                <td>{{p.payment}}</td>
+            </tr>
+            </tbody>
+        </table>
+        <button ng-click="ConfirmStep1()" >确认商品</button>
+    </div>
+
+    <div ng-show="Step1IsOk==true">
+        <ul>
+            <li ng-repeat="p in orderProductList">
+                <b>{{p.productName}}</b>,购买数量：<span>{{p.buyAmount}}</span>，应付价格：<b>{{p.payment}}</b>
+            </li>
+        </ul>
+    </div>
+
+    <form name="AccountInfo" ng-show="Step2IsOk!=true" >
+        <ul>
+            <li><label>收货人姓名：</label><input type="text" name="TrueName" ng-model="TrueName" required ng-pattern="/^\w{2,5}$/" />
+<span ng-show="AccountInfo.TrueName.$dirty && AccountInfo.TrueName.$invalid">
+请输入2到5位的收货人姓名
+</span>
+            </li>
+            <li><label>电话号码：</label><input type="text" name="Mobile" ng-model="Mobile" required ng-pattern="/^[0-9]{11}$/" />
+<span ng-show="AccountInfo.Mobile.$dirty && AccountInfo.Mobile.$invalid">
+请输入11位的电话号码
+</span>
+            </li>
+            <li><label>QQ：</label><input type="text" name="QQ" ng-model="QQ" required ng-pattern="/^[0-9]{5,11}$/" />
+<span ng-show="AccountInfo.QQ.$dirty && AccountInfo.QQ.$invalid">
+请输入5到11位的QQ号码
+</span>
+            </li>
+            <li><label>收货地址：</label><input type="text" name="Address" ng-model="Address" required />
+<span ng-show="AccountInfo.Address.$dirty && AccountInfo.Address.$invalid">
+请输入你的收货地址
+</span>
+            </li>
+            <li>
+                <p ng-show="!NeedInvoice">
+                    <input type="checkbox" ng-model="NeedInvoice" />需要发票
+                </p>
+                <p ng-show="NeedInvoice">
+                    <label>发票抬头：</label><input type="text" name="InvoiceTitle" ng-model="InvoiceTitle" />
+                </p>
+            </li>
+        </ul>
+        <button ng-click="ConfirmStep2()" ng-disabled="AccountInfo.$invalid" >确认个人信息</button>
+    </form>
+
+    <div ng-show="Step2IsOk==true" >
+        <ul>
+            <li>{{TrueName}}</li>
+            <li>{{Mobile}}</li>
+            <li>{{QQ}}</li>
+            <li>{{Address}}</li>
+            <li>{{NeedInvoice}}</li>
+            <li>{{InvoiceTitle}}</li>
+        </ul>
+    </div>
+
+    <div ng-show="Step3IsOk != true">
+        <div>
+            <b ng-class=" PaymentType==1 ? 'selected' : '' " ng-click="ChangePaymentType(1)"  >网银支付</b>
+            <b ng-class=" PaymentType==2 ? 'selected' : '' "  ng-click="ChangePaymentType(2)"  >平台支付</b>
+            <table>
+                <thead>
+                <tr>
+                    <th>选中</th>
+                    <th>ID</th>
+                    <th>名称</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="p in PaymentList | filter : FiltByType">
+                    <td><input type="checkbox" ng-model="p.Selected" /></td>
+                    <td>{{p.ID}}</td>
+                    <td>{{p.Title}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <button ng-click="ConfirmStep3()" >确认支付方式</button>
+    </div>
+    <div ng-show="Step3IsOk == true">
+        <b>{{SelectedPayment.Title}}</b>
+    </div>
+
+
+</div>
+
+<button ng-show=" Step1IsOk && Step2IsOk && Step3IsOk " ng-click="CheckOut()" >提交订单</button>
+
+<script src="js/angular.min.js"></script>
+<script>
+
+    Array.prototype.remove=function(dx)
+    {
+        if(isNaN(dx)||dx>this.length){return false;}
+        for(var i=0,n=0;i<this.length;i++)
+        {
+            if(this[i]!=this[dx])
+            {
+                this[n++]=this[i]
+            }
+        }
+        this.length-=1
+    }
+
+    var app = angular.module("app",[]);
+    app.controller("controller",function($scope){
+
+        $scope.productList = [
+            {
+                productId:1,
+                productName:'耳机',
+                productCode:'P0001',
+                logo:'images/earphone.jpg',
+                buyAmount:1,
+                retailPrice:1500,
+                oldPrice:1700,
+                payment:1500,
+                selected:true
+            },
+            {
+                productId:2,
+                productName:'单反相机',
+                productCode:'P0002',
+                logo:'images/camera.jpg',
+                buyAmount:1,
+                retailPrice:5200,
+                oldPrice:6000,
+                payment:5200,
+                selected:true
+            },
+            {
+                productId:3,
+                productName:'手机',
+                productCode:'P0003',
+                logo:'images/phone.jpg',
+                buyAmount:1,
+                retailPrice:490,
+                oldPrice:600,
+                payment:490,
+                selected:true
+            }
+        ];
+
+        $scope.Step1IsOk=false;
+        $scope.orderProductList = [];
+
+        $scope.ConfirmStep1 = function(){
+            for(var i in $scope.productList)
+            {
+                var product = $scope.productList[i];
+                if(product.selected){
+                    $scope.orderProductList.push(product);
+                }
+            }
+            $scope.Step1IsOk = true;
+        };
+
+
+        $scope.TrueName = "";
+        $scope.Mobile = "";
+        $scope.QQ = "";
+        $scope.Address = "";
+        $scope.NeedInvoice = false;
+        $scope.InvoiceTitle = "";
+
+        $scope.Step2IsOk = false;
+        $scope.ConfirmStep2 = function(){
+            $scope.Step2IsOk =true;
+        };
+
+
+        $scope.PaymentType=1;//支付类型，默认为网银支付
+        $scope.ChangePaymentType = function(type){
+            $scope.PaymentType = type;
+        }
+        $scope.FiltByType = function(payment){
+            if(payment.Type == $scope.PaymentType)
+            {
+                return payment;
+            }
+        }
+        $scope.PaymentList = [
+            {
+                ID:1,
+                Code:'A3110',
+                Type:1,//网银
+                Title:'中国工商银行',
+                Selected:false
+            },
+            {
+                ID:2,
+                Code:'A3111',
+                Type:1,//网银
+                Title:'招商银行',
+                Selected:false
+            },
+            {
+                ID:3,
+                Code:'A3112',
+                Type:1,//网银
+                Title:'中国农业银行',
+                Selected:false
+            },
+            {
+                ID:4,
+                Code:'A3113',
+                Type:1,//网银
+                Title:'交通银行',
+                Selected:false
+            },
+            {
+                ID:5,
+                Code:'A3114',
+                Type:1,//网银
+                Title:'中国建设银行',
+                Selected:false
+            },
+            {
+                ID:6,
+                Code:'B2110',
+                Type:2,//支付平台
+                Title:'微信支付',
+                Selected:false
+            },
+            {
+                ID:7,
+                Code:'B2111',
+                Type:2,//支付平台
+                Title:'支付宝',
+                Selected:false
+            }
+        ];
+
+        $scope.Step3IsOk = false;
+        $scope.SelectedPayment = {};
+        $scope.ConfirmStep3 = function(){
+            for(var i in $scope.PaymentList)
+            {
+                if($scope.PaymentList[i].Selected){
+                    $scope.SelectedPayment = $scope.PaymentList[i];
+                }
+            }
+            $scope.Step3IsOk = true;
+        }
+
+
+        $scope.CheckOut = function(){
+            var order = {
+                product: $scope.orderProductList,
+                accountInfo: {
+                    TrueName:$scope.TrueName,
+                    Mobile:$scope.Mobile,
+                    QQ:$scope.QQ,
+                    Address:$scope.Address,
+                    NeedInvoice:$scope.NeedInvoice,
+                    InvoiceTitle:$scope.InvoiceTitle
+                },
+                payment:$scope.SelectedPayment
+            };
+            console.log(order);
+        }
+
+    });
+
+</script>
+
+</body>
+</html>
