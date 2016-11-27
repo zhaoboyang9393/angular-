@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        /*整个表单设置*/
+        .wrapper{
+            width: 200px;
+            margin: 30px auto;
+        }
+        /*p字颜色*/
+        .error{
+            color: red;
+        }
+        .fa-check{
+            color:#3c763d;
+        }
+
+    </style>
+
+    <link rel="stylesheet" href="lib/font-awesome-4.7.0/css/font-awesome.css"/>
+</head>
+<!--绑定ng-app-->
+<body ng-app="myApp" ng-controller="signUpController">
+<!--引入angular和js文件-->
+<script src="lib/angular.min.js"></script>
+
+<!--最外div-->
+<div class="wrapper">
+    <!--表头-->
+    <h2>注册账户</h2>
+    <!--form-->
+    <!--ng-submit提交后事件-->
+    <form name="signUpForm" ng-submit="submitForm()">
+        <div class="form-group">
+            <label>用户名：</label>
+            <input type="text"
+                   name="username"
+                   class="form-control"
+                   ng-model="userdata.username"
+
+                   required
+                   ng-minlength="6"
+                   ng-maxlength="10"
+                    />
+            <!--判断是否合法，不合法显示文字-->
+            <p class="error" ng-if="(signUpForm.username.$error.minlength||
+            signUpForm.username.$error.maxlength)&&signUpForm.username.$touched">
+                用户名应在6至10位之间
+            </p>
+            <p class="fa fa-check" ng-if="signUpForm.username.$valid"></p>
+        </div>
+
+        <div class="form-group">
+            <label>密码：</label>
+            <input type="password"
+                   name="password"
+                   class="form-control"
+                   ng-model="userdata.password"
+
+                   ng-minlength="6"
+                   ng-maxlength="10"
+                   required
+                    />
+            <p class="error" ng-if="signUpForm.password.$error.required && signUpForm.password.$touched">
+                密码不能为空
+            </p>
+            <p class="error" ng-if="(signUpForm.password.$error.minlength||
+            signUpForm.password.$error.maxlength)&&signUpForm.password.$touched">
+                密码需在6至10位中间
+            </p>
+        </div>
+
+        <div class="form-group">
+            <label>确认密码：</label>
+            <input type="password"
+                   name="password2"
+                   class="form-control"
+                   ng-model="userdata.password2"
+
+                   required
+                   compare="userdata.password" />
+            <!--<compare></compare>-->
+            <p class="error"
+               ng-if="signUpForm.password2.$error.compare && signUpForm.password2.$touched">
+               两次密码不一致，请确认
+            </p>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-primary">注册</button>
+        </div>
+
+    </form>
+
+
+
+</div>
+
+<script>
+    var app=angular.module("myApp",[]);
+    app.controller("signUpController",function($scope){
+        $scope.submitForm=function(){
+//          打印userdata,就是输入的用户名、密码、确认密码
+            console.log($scope);
+        }
+    });
+
+//    确认密码校验
+    app.directive("compare",function(){
+        return {
+            //绑定
+            require:'ngModel',
+            // 4 属性 A  element E   class C   注释 M
+            restrict:'A',
+            scope:{
+                //作用域内创建oldVal
+                oldVal: '=compare'
+            },
+//          主函数
+            link: function (scope, ele, attrs, controller) {
+//              $validators
+                controller.$validators.compare = function (val){
+//                  判断
+                    return val === scope.oldVal;
+                }
+//              监听
+                scope.$watch('oldVal', function () {
+                   controller.$validate()
+               })
+            },
+        }
+
+//                var o={};
+//        o.strick="A";
+//        o.scope={
+//            orgText:"=compare"
+//        };
+//        o.require="ngModel";
+//        o.link=function(sco,ele,att,con){
+//
+//            con.$validators.compare=function(v){
+//                return v===sco.orgText;
+//            }
+//            sco.$watch("orgText",function(){
+//                 controller.$validate()
+//            })
+//
+//        }
+//
+//
+//          return o;
+
+    });
+
+
+</script>
+</body>
+</html>
