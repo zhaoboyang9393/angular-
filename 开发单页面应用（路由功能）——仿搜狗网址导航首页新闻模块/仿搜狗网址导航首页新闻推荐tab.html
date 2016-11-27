@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tab 标签</title>
+    <style>
+
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: #F7F7F7;
+		}
+		/*新闻显示框*/
+		.tabs {
+			width: 400px;
+			margin: 30px auto;
+			background-color: #FFF;
+			border: 1px solid #C0DCC0;
+			box-sizing: border-box;
+		}
+
+		.tabs nav {
+			height: 40px;
+			text-align: center;
+			line-height: 40px;
+			overflow: hidden;
+			background-color: #C0DCC0;
+			display: flex;
+		}
+
+		nav a {
+			display: block;
+			width: 100px;
+			border-right: 1px solid #FFF;
+			color: #000;
+			text-decoration: none;
+		}
+
+		nav a:last-child {
+			border-right: 0 none;
+		}
+
+		nav a.active {
+			background-color: #9BAF9B;
+			color:blue;
+		}
+
+		.cont {
+			overflow: hidden;
+			/*display: none;*/
+		}
+
+		.cont ol {
+			line-height: 30px;
+		}
+
+    </style>
+
+    <!--[if lte IE 6]>
+    	
+    <![endif]-->
+</head>
+<body ng-app="Tabs">
+	
+	<div class="tabs" ng-controller="TabController">
+		<nav>
+			<a href="javascript:;" ng-class="{active: headline}" data-cont="headline" ng-click="switch('headline')">头条</a>
+			<a href="javascript:;" ng-class="{active: military}" data-cont="military" ng-click="switch('military')">军事</a>
+			<a href="javascript:;" ng-class="{active: society}" data-cont="society" ng-click="switch('society')">社会</a>
+			<a href="javascript:;" ng-class="{active: star}" data-cont="star" ng-click="switch('star')">明星</a>
+			<a href="javascript:;" ng-class="{active: Feelings}" data-cont="Feelings" ng-click="switch('Feelings')">情感</a>
+		</nav>
+		<div ng-switch on="type">
+			<section ng-switch-when="headline" class="cont">
+				<ol>
+					<li>全球20座污染严重城市:16座位于中国</li>
+					<li>环保局回应"雾霾天发护肤消息":被盗号</li>
+					<li>中国精神疾病患者超过1亿 多数未治疗</li>
+					<li>中传女生被害案嫌犯:你们都在我剧本里</li>
+					<li>河南"无臂小伙"买房遇难题:按不了手印</li>
+					<li>谢杏芳:很多女孩喜欢林丹 管也管不了</li>
+					<li>女子产后即遭家暴 婆婆:要三从四德</li>
+					<li>一个每人有12个手指和12个脚趾的家族</li>
+				</ol>
+			</section>
+			<section ng-switch-when="military" class="cont">
+				<ol>  
+					<li>越南这举动让中国空军突然如鲠在喉</li>
+					<li>朴槿惠将赴中日韩峰会 正酝酿复出</li>
+					<li>朝鲜出大事！金正恩或被这人所取代</li>
+					<li>西方对中国连出八招 结局不寒而栗</li>
+					<li>菲迈与美决裂第一步 美经济受重创</li>
+					<li>美盟友当场反水：愿意与中俄并肩走</li>
+					<li>震惊！全球十大疯狂的军事训练方式</li>
+					<li>日本自卫队太丢人 这一幕全场哄笑</li>
+				</ol>
+			</section>
+			<section ng-switch-when="society" class="cont">
+				<ol>
+					<li>男子酒后与人争吵 持刀刺死劝架表哥</li>
+					<li>14岁孩子自称开发商儿子 诈骗48万</li>
+					<li>男子下载小游戏 15天吸走话费四百多</li>
+					<li>男子好心送女孩上学 被当人贩子打伤</li>
+					<li>女子吃八宝粥致牙齿开裂 索赔6000元</li>
+					<li>母亲问候太频繁 女子自导自演绑架案</li>
+					<li>孕妇在商场遭抱摔 涉案人被拘留14天</li>
+					<li>小伙嫌自己太丑整天遮嘴 实患幻丑症</li>
+				</ol>
+			</section>
+			<section ng-switch-when="star" class="cont">
+				<ol> 
+					<li>王力宏为同志发声：有权过他们的生活</li>
+					<li>美国女星在衣柜上吊自杀 疑因抑郁症</li>
+					<li>赵雅淇炒作 经纪人朋友圈透出轨细节</li>
+					<li>冯小刚手撕王健林 “小墙皮”引发的恩怨</li>
+					<li>陈赫连续工作五天 体力不支倒地就睡</li>
+					<li>戚薇日本拍戏脸受伤：已缝合无大事</li>
+					<li>两位前天王嫂同框乐基儿熊黛林谁赢</li>
+					<li>杨幂穿上军服扣腰带 蛮腰引起热议</li>
+				</ol>
+			</section>
+			<section ng-switch-when="Feelings" class="cont">
+				<ol> 
+					<li>注意！10种旺夫富贵双全的女人面相</li>
+					<li>最伤女人心的十句话 男人千万不要说</li>
+					<li>我43岁嫁给27岁老公被折磨得想离婚</li>
+					<li>和吝啬洋男友生活苦不堪言 我该怎么办</li>
+					<li>姐弟恋遭反对怎么办？表达你们的真爱</li>
+					<li>恋爱课堂：情侣吵架以后要怎么挽回</li>
+					<li>男人恋爱时不会说的8件事 你知道吗</li>
+					<li>什么是女人心中的好男人 要做到这些</li>
+				</ol>
+			</section>
+		</div>
+    </div>
+    <script src="./libs/angular.min.js"></script>
+    <script>
+    	var Tabs = angular.module('Tabs', []);
+
+    	Tabs.controller('TabController', ['$scope', function ($scope) {
+
+    		// 初始显示的内容
+    		$scope.type = 'headline';
+
+    		// 初始选中的标签
+    		$scope[$scope.type] = true;
+
+    		// 定义一个中间数组
+    		$scope.temp = [];
+
+    		$scope.switch = function (type) {
+    			// 更换显示的内容
+    			$scope.type = type;
+
+    			//  把$scope.temp里所有的类型都改成false
+    			angular.forEach($scope.temp, function (val) {
+    				// console.log(a);
+
+    				$scope[val] = false;
+    			});
+
+    			// 把当前改成true
+    			$scope[type] = true;
+
+    			// $.each(arr, function() {});
+    			$scope.temp.push(type);
+
+    			// console.log($scope.temp);
+    		}
+
+    	}])
+	</script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tab 标签</title>
+    <style>
+
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: #F7F7F7;
+		}
+	
+		.tabs {
+			width: 400px;
+			margin: 30px auto;
+			background-color: #FFF;
+			border: 1px solid #C0DCC0;
+			box-sizing: border-box;
+		}
+
+		.tabs nav {
+			height: 40px;
+			text-align: center;
+			line-height: 40px;
+			overflow: hidden;
+			background-color: #C0DCC0;
+			display: flex;
+		}
+
+		nav a {
+			display: block;
+			width: 100px;
+			border-right: 1px solid #FFF;
+			color: #000;
+			text-decoration: none;
+		}
+
+		nav a:last-child {
+			border-right: 0 none;
+		}
+
+		nav a.active {
+			background-color: #9BAF9B;
+		}
+
+		.cont {
+			overflow: hidden;
+			/*display: none;*/
+		}
+
+		.cont ol {
+			line-height: 30px;
+		}
+
+    </style>
+
+    <!--[if lte IE 6]>
+    	
+    <![endif]-->
+</head>
+<body ng-app="Tabs">
+	
+	<div class="tabs" ng-controller="TabController">
+		<nav>
+			<a href="javascript:;" ng-class="{active: headline}" data-cont="headline" ng-click="switch('headline')">头条</a>
+			<a href="javascript:;" ng-class="{active: military}" data-cont="military" ng-click="switch('military')">军事</a>
+			<a href="javascript:;" ng-class="{active: society}" data-cont="society" ng-click="switch('society')">社会</a>
+			<a href="javascript:;" ng-class="{active: star}" data-cont="star" ng-click="switch('star')">明星</a>
+			<a href="javascript:;" ng-class="{active: Feelings}" data-cont="Feelings" ng-click="switch('Feelings')">情感</a>
+		</nav>
+		<div ng-switch on="type">
+			<section ng-switch-when="headline" class="cont">
+				<ol>
+					<li>全球20座污染严重城市:16座位于中国</li>
+					<li>环保局回应"雾霾天发护肤消息":被盗号</li>
+					<li>中国精神疾病患者超过1亿 多数未治疗</li>
+					<li>中传女生被害案嫌犯:你们都在我剧本里</li>
+					<li>河南"无臂小伙"买房遇难题:按不了手印</li>
+					<li>谢杏芳:很多女孩喜欢林丹 管也管不了</li>
+					<li>女子产后即遭家暴 婆婆:要三从四德</li>
+					<li>一个每人有12个手指和12个脚趾的家族</li>
+				</ol>
+			</section>
+			<section ng-switch-when="military" class="cont">
+				<ol>
+					<li>河感在生矿难，死伤在全101111</li>
+					<li>禽流感在感在广1处继续蔓延，温家宝指示</li>
+					<li>南方大旱，农作物减产绝收面积上亩</li>
+					<li>猪流感在广在全国暴发</li>
+					<li>禽流感在全国多处继续蔓延，温家宝指示</li>
+					<li>南方大旱，农作物减产绝收面积上亩</li>
+					<li>猪流感在广东群体性暴发</li>
+				</ol>
+			</section>
+			<section ng-switch-when="society" class="cont">
+				<ol>
+					<li>河南再次发生矿难，死伤人数超过100</li>
+					<li>禽流感在全国多处农作物农延，温家宝指示</li>
+					<li>南方大旱，农作物减产绝收面积上亩</li>
+					<li>猪流感在广东群体性暴发</li>
+					<li>禽流感在全农作物继续蔓延，温家宝指示</li>
+					<li>南方大农作物减产绝收面积上亩</li>
+					<li>猪流感在广东群体性暴发</li>
+				</ol>
+			</section>
+			<section ng-switch-when="star" class="cont">
+				<ol>
+					<li>河南再次发生矿难，死伤人数超过100</li>
+					<li>禽流感次发生蔓延，温家宝指示</li>
+					<li>南方大旱，农作物减产绝收面积上亩</li>
+					<li>猪流感在广减产绝收发</li>
+					<li>禽流感在全国多作物减产绝收面积上亩</li>
+					<li>猪流感在广东群体性暴发</li>
+				</ol>
+			</section>
+			<section ng-switch-when="Feelings" class="cont">
+				<ol>
+					<li>河南再次发生矿难，死伤人数超过100</li>
+					<li>禽流感次发生蔓延，温家宝指示</li>
+					<li>南方大旱，农作物减产绝收面积上亩</li>
+					<li>猪流感在广减产绝收发</li>
+					<li>禽流感在全国多作物减产绝收面积上亩</li>
+					<li>猪流感在广东群体性暴发</li>
+				</ol>
+			</section>
+		</div>
+    </div>
+    <script src="./libs/angular.min.js"></script>
+    <script>
+    	var Tabs = angular.module('Tabs', []);
+
+    	Tabs.controller('TabController', ['$scope', function ($scope) {
+
+    		// 初始显示的内容
+    		$scope.type = 'headline';
+
+    		// 初始选中的标签
+    		$scope[$scope.type] = true;
+
+    		// 定义一个中间数组
+    		$scope.temp = [];
+
+    		$scope.switch = function (type) {
+    			// 更换显示的内容
+    			$scope.type = type;
+
+    			//  把$scope.temp里所有的类型都改成false
+    			angular.forEach($scope.temp, function (val) {
+    				// console.log(a);
+
+    				$scope[val] = false;
+    			});
+
+    			// 把当前改成true
+    			$scope[type] = true;
+
+    			// $.each(arr, function() {});
+    			$scope.temp.push(type);
+
+    			// console.log($scope.temp);
+    		}
+
+    	}])
+	</script>
+</body>
+</html>
